@@ -1,3 +1,17 @@
 spring:
   application:
     name: marketplace
+
+  docker:
+    compose:
+      lifecycle-management: start-only
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+management:
+  endpoint:
+    health:
+      show-details: always

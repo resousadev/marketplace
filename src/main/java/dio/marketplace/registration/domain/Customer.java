@@ -1,5 +1,9 @@
 package dio.marketplace.registration.domain;
 
+import lombok.Getter;
+import org.springframework.util.Assert;
+
+@Getter
 import org.springframework.util.Assert;
 
 public class Customer {
