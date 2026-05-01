@@ -4,6 +4,8 @@ import lombok.Getter;
 import org.springframework.util.Assert;
 
 @Getter
+import org.springframework.util.Assert;
+
 public class Customer {
     private CustomerId id;
     private String name;

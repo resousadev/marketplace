@@ -24,6 +24,14 @@ public class JpaCustomerRepository implements CustomerRepository {
         var entity = toEntity(customer);
         var savedEntity = customerEntityRepository.save(entity);
         return toDomain(savedEntity);
+import dio.marketplace.registration.domain.CustomerRepository;
+
+import java.util.List;
+
+public class JpaCustomerRepository implements CustomerRepository {
+    @Override
+    public Customer save(Customer customer) {
+        return null;
     }
 
     @Override
@@ -52,5 +60,6 @@ public class JpaCustomerRepository implements CustomerRepository {
                 fullName,
                 customerEntity.getEmail()
         );
+        return List.of();
     }
 }
