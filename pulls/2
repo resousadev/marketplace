@@ -1,0 +1,105 @@
+## 🗄️ Implementar registro de Cliente com JPA e configuração de Docker Compose
+
+### 🎯 Objetivo
+Completar a implementação da funcionalidade de registro de clientes integrando JPA com banco de dados MySQL, estabelecendo a camada de persistência com mapeamento objeto-relacional e configurar o ambiente de desenvolvimento com Docker Compose.
+
+### ✨ Principais Mudanças
+
+#### 📦 Novas Dependências Adicionadas:
+
+**Build.gradle:**
+- Lombok (io.freefair) - Redução de boilerplate
+- Spring Boot Data JPA - Persistência com JPA
+- MySQL Connector - Driver para MySQL
+- Spring Boot Web - Framework web
+- Spring Boot Actuator - Monitoramento
+- Spring Boot Validation - Validação de dados
+- Spring Data REST - Exposição automática de repositórios REST
+- HAL Explorer - Navegação de APIs REST
+- Spring Boot Docker Compose - Orquestração de containers
+
+#### 🗄️ Entidade JPA:
+
+**CustomerEntity** - Mapeamento ORM da entidade Customer
+- Atributos: `id`, `firstName`, `lastName`, `email`, `createdAt`
+- Validações: email único, firstName e email obrigatórios
+- Auto-geração de UUID e timestamp de criação
+- Anotações: `@Entity`, `@Data`, `@RequiredArgsConstructor`
+
+#### 📡 Repositório Spring Data:
+
+**CustomerEntityRepository** - Interface de repositório Spring Data REST
+- Estende `CrudRepository` e `PagingAndSortingRepository`
+- Busca por firstName com método customizado
+- Exposto automaticamente como endpoints REST via `@RepositoryRestResource`
+- DELETE desabilitado para segurança
+
+#### 🔄 Implementação do Repositório de Domínio:
+
+**JpaCustomerRepository** - Implementação refatorada
+- Mapeia Customer (domínio) ↔ CustomerEntity (persistência)
+- `save()` - Persiste e converte de volta para domínio
+- `findAll()` - Lista com conversão para domínio
+- Métodos de conversão: `toEntity()` e `toDomain()`
+
+#### 🐳 Docker Compose:
+
+**compose.yaml** - Orquestração do ambiente local
+- Serviço MySQL 9.6
+- Variáveis de ambiente configuradas
+- Volume persistente para dados
+- Health check para validação de conectividade
+- Porta mapeada: 3307→3306
+
+#### ⚙️ Configuração da Aplicação:
+
+**application.yaml** - Propriedades do Spring
+- Docker Compose lifecycle: start-only
+- JPA Hibernate: DDL auto-update
+- SQL logging habilitado
+- Health check com detalhes
+
+#### 🔧 Melhorias no Código:
+
+**Customer.java:**
+- Adicionada anotação `@Getter` (Lombok)
+
+### 🏗️ Arquitetura
+```
+Camada de Domínio (Domain)
+    ↕ (Conversor: toDomain / toEntity)
+Camada de Persistência (JPA)
+    ↕ (JDBC)
+Banco de Dados (MySQL)
+```
+
+### 📊 Estatísticas
+- **Arquivos alterados:** 7
+- **Adições:** 164 linhas
+- **Deleções:** 0 linhas
+- **Commits:** 17
+
+### 🚀 Como Usar
+
+1. **Iniciar o Docker Compose:**
+   ```bash
+   docker-compose up
+   ```
+
+2. **Endpoints REST Automáticos (gerados por Spring Data REST):**
+   - `GET /customers` - Listar clientes
+   - `POST /customers` - Criar cliente
+   - `GET /customers/{id}` - Obter cliente
+   - `PATCH /customers/{id}` - Atualizar cliente
+
+3. **HAL Explorer:**
+   - Acesse `http://localhost:8080` para explorar a API
+
+### ✅ Padrões Implementados
+- ✔️ Clean Architecture com separação de camadas
+- ✔️ JPA/Hibernate para persistência
+- ✔️ Spring Data REST para API automática
+- ✔️ Docker Compose para ambiente local
+- ✔️ Validação em entidade JPA
+- ✔️ Conversor Domain ↔ Entity
+- ✔️ Health checks para confiabilidade
