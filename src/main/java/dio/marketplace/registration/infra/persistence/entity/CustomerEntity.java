@@ -1,6 +1,9 @@
 package dio.marketplace.registration.infra.persistence.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -14,7 +17,6 @@ import java.util.UUID;
 @Data
 @RequiredArgsConstructor
 public class CustomerEntity {
-
     @Id
     private UUID id;
 
