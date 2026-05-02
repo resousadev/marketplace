@@ -1,9 +1,6 @@
 package dio.marketplace.registration.infra.persistence.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -17,6 +14,7 @@ import java.util.UUID;
 @Data
 @RequiredArgsConstructor
 public class CustomerEntity {
+
     @Id
     private UUID id;
 
@@ -34,6 +32,9 @@ public class CustomerEntity {
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Address address;
 
     @PrePersist
     public void prePersist() {
