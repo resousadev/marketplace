@@ -25,4 +25,9 @@ public class Address {
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
+
+    @Override
+    public String toString() {
+        return String.format("%s, %s, %s - %s", street, postalCode, city, state);
+    }
 }
