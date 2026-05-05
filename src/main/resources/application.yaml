@@ -6,9 +6,26 @@ spring:
     compose:
       lifecycle-management: start-only
 
+# REGISTRATION (MySQL 3307)
+registration:
+  datasource:
+    url: jdbc:mysql://localhost:3307/registration
+    username: root
+    password: root
   jpa:
     hibernate:
       ddl-auto: update
+    show-sql: true
+
+# CATALOG (MySQL 3308)
+catalog:
+  datasource:
+    url: jdbc:mysql://localhost:3308/catalog
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
     show-sql: true
 
 management:
