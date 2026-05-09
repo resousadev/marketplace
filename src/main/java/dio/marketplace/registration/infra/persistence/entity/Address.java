@@ -10,6 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Data
+@Table(name = "address")
 @RequiredArgsConstructor
 public class Address {
 
@@ -18,12 +19,14 @@ public class Address {
     private UUID id;
 
     private String street;
+
+    @Column(name = "postal_code")
     private String postalCode;
     private String city;
     private String state;
 
     @CreationTimestamp
-    @Column(nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
     @Override
