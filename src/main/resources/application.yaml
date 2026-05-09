@@ -10,8 +10,8 @@ spring:
 registration:
   datasource:
     url: jdbc:mysql://localhost:3307/registration
-    username: root
-    password: root
+    username: app
+    password: app
   jpa:
     hibernate:
       ddl-auto: update
@@ -21,14 +21,24 @@ registration:
 catalog:
   datasource:
     url: jdbc:mysql://localhost:3308/catalog
-    username: root
-    password: root
+    username: app
+    password: app
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
 
 management:
   endpoint:
     health:
       show-details: always
+
+#logging:
+#  level:
+#    com.zaxxer.hikari: DEBUG
+#    org.hibernate: DEBUG
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.schema: DEBUG
