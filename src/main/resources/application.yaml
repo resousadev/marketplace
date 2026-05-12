@@ -38,7 +38,9 @@ management:
 #    com.zaxxer.hikari: DEBUG
 #    org.hibernate: DEBUG
 
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.orm.schema: DEBUG
+#logging:
+#  level:
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.orm.schema: DEBUG
+#
+#    org.springframework.boot.autoconfigure: DEBUG
