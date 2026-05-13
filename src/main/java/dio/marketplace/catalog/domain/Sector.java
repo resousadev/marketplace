@@ -1,0 +1,13 @@
+package dio.marketplace.catalog.domain;
+
+import java.math.BigDecimal;
+
+public class Sector {
+    private SectorId id;
+    private BigDecimal price;
+
+    public Sector(SectorId id, BigDecimal price) {
+        this.id = id;
+        this.price = price;
+    }
+}
