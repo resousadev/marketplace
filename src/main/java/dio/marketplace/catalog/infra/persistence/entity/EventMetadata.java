@@ -37,9 +37,6 @@ public class EventMetadata {
     @LastModifiedDate
     private Instant updatedAt;
 
-  public EventMetadata(String description, Map<String, Object> technicalRequirements, Map<dio.marketplace.catalog.domain.Sector, List<dio.marketplace.catalog.domain.Seat>> seats) {
-  }
-
   @Data
     @NoArgsConstructor
     @AllArgsConstructor

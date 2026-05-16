@@ -9,6 +9,7 @@ import dio.marketplace.catalog.domain.SectorId;
 import dio.marketplace.catalog.domain.SeatId;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -28,11 +29,15 @@ public class MongoEventMetadataRepository implements EventMetadataRepository {
     }
 
     private static EventMetadata mapper(dio.marketplace.catalog.infra.persistence.entity.EventMetadata eventMetadata) {
-        var sectors = eventMetadata.getSectors().stream()
+        var sectors = Optional.ofNullable(eventMetadata.getSectors())
+                .orElse(Collections.emptyList())
+                .stream()
                 .map(MongoEventMetadataRepository::mapper)
                 .collect(Collectors.toMap(Sector::getId, Function.identity()));
 
-        var seats = eventMetadata.getSeats().stream()
+        var seats = Optional.ofNullable(eventMetadata.getSeats())
+                .orElse(Collections.emptyList())
+                .stream()
                 .map(MongoEventMetadataRepository::mapper)
                 .collect(Collectors.groupingBy(
                         seat -> sectors.get(seat.getSectorId().name())
