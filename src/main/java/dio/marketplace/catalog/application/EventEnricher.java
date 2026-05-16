@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.CompletableFuture;
+
 @Slf4j
 @Service
 public class EventEnricher {
@@ -16,13 +18,13 @@ public class EventEnricher {
   }
 
   @Async
-  public Event enrich(Event event) {
+  public CompletableFuture<Event> enrich(Event event) {
     log.info("Enriching event: {}", event);
 
     var metadata = eventMetadataRepository.findByEventId(event.getId());
     event.setMetadata(metadata);
 
-    return event;
+    return CompletableFuture.completedFuture(event);
   }
 
 }
