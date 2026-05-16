@@ -1,6 +1,5 @@
 package dio.marketplace.catalog.domain;
 
-import dio.marketplace.catalog.infra.persistence.entity.EventMetadata;
 import lombok.Getter;
 import lombok.Setter;
 

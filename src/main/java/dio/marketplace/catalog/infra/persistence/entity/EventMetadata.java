@@ -37,7 +37,10 @@ public class EventMetadata {
     @LastModifiedDate
     private Instant updatedAt;
 
-    @Data
+  public EventMetadata(String description, Map<String, Object> technicalRequirements, Map<dio.marketplace.catalog.domain.Sector, List<dio.marketplace.catalog.domain.Seat>> seats) {
+  }
+
+  @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Sector {

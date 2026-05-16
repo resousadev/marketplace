@@ -1,6 +1,12 @@
 package dio.marketplace.catalog.infra.persistence.repository;
 
-import dio.marketplace.catalog.domain.*;
+import dio.marketplace.catalog.domain.EventId;
+import dio.marketplace.catalog.domain.EventMetadata;
+import dio.marketplace.catalog.domain.EventMetadataRepository;
+import dio.marketplace.catalog.domain.Sector;
+import dio.marketplace.catalog.domain.Seat;
+import dio.marketplace.catalog.domain.SectorId;
+import dio.marketplace.catalog.domain.SeatId;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
