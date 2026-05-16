@@ -28,6 +28,11 @@ catalog:
       ddl-auto: update
     show-sql: true
 
+# VIRTUAL-THREADS
+  threads:
+    virtual:
+      enabled: true
+
 management:
   endpoint:
     health:
