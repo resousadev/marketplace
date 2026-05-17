@@ -28,6 +28,11 @@ catalog:
       ddl-auto: update
     show-sql: true
 
+# CATALOG (CACHE)
+  data:
+    redis:
+      client-type: jedis
+
 # VIRTUAL-THREADS
   threads:
     virtual:
