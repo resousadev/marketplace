@@ -11,9 +11,12 @@ import org.springframework.boot.jpa.EntityManagerFactoryBuilder;
 import org.springframework.boot.jpa.autoconfigure.JpaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -23,6 +26,8 @@ import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 
+import static org.springframework.data.redis.cache.RedisCacheConfiguration.defaultCacheConfig;
+
 @Configuration(proxyBeanMethods = false)
 @EnableJpaRepositories(
         basePackages = "dio.marketplace.catalog",
@@ -31,15 +36,6 @@ import java.util.LinkedHashMap;
 @EnableMongoRepositories
 @EnableMongoAuditing
 public class CatalogConfiguration {
-
-    @Bean
-    public MongoClientSettings mongoClientSettings() {
-        return MongoClientSettings.builder()
-                .applyToClusterSettings(builder ->
-                        builder.hosts(Collections.singletonList(new ServerAddress("localhost", 27018)))                )
-                .uuidRepresentation(UuidRepresentation.STANDARD)
-                .build();
-    }
 
     @Bean(name = "catalogDataSourceProperties", defaultCandidate = false)
     @ConfigurationProperties(prefix = "catalog.datasource")
@@ -81,5 +77,24 @@ public class CatalogConfiguration {
     @Bean(name = "catalogTransactionManager", defaultCandidate = false)
     public PlatformTransactionManager catalogTransactionManager(@Qualifier("catalogEntityManagerFactory") LocalContainerEntityManagerFactoryBean emf) {
         return new JpaTransactionManager(emf.getObject());
+    }
+
+    // MongoDB configuration
+    @Bean
+    public MongoClientSettings mongoClientSettings() {
+        return MongoClientSettings.builder()
+            .applyToClusterSettings(builder ->
+                builder.hosts(Collections.singletonList(new ServerAddress("localhost", 27018)))                )
+            .uuidRepresentation(UuidRepresentation.STANDARD)
+            .build();
+    }
+
+    // Redis configuration
+    @Primary
+    @Bean
+    public RedisCacheManager catalogCacheManager(RedisConnectionFactory connectionFactory) {
+        return RedisCacheManager.builder(connectionFactory)
+            .cacheDefaults(defaultCacheConfig())
+            .build();
     }
 }
