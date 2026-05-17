@@ -1,9 +1,9 @@
 package dio.marketplace.catalog.application;
 
 import dio.marketplace.catalog.application.dto.EventOutput;
-import dio.marketplace.catalog.domain.Event;
 import dio.marketplace.catalog.domain.EventRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +20,7 @@ public class BrowseShowcaseUseCase {
     this.eventEnricher = eventEnricher;
   }
 
+  @Cacheable(value = "showcase", unless = "#result == null || #result.isEmpty()")
   public List<EventOutput> execute() {
     var futures = eventRepository.findAll()
         .stream()
