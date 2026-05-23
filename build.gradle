@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '4.0.6'
     id 'io.spring.dependency-management' version '1.1.7'
+    // id 'jacoco'  // TODO: Ativar quando suportar Java 25
 
     id 'io.freefair.lombok' version '9.2.0'
 }
@@ -24,6 +25,15 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // AssertJ para assertions fluentes
+    testImplementation 'org.assertj:assertj-core:3.24.1'
+
+    // DataFaker (moderno, fork atualizado do JavaFaker - sem bug de SnakeYAML)
+    testImplementation 'net.datafaker:datafaker:2.2.2'
+
+    // Testcontainers (será adicionado após resolver compatibilidade)
+    // TODO: Adicionar quando houver compatibilidade total com Spring Boot 4.0.6
 
     developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 
@@ -48,3 +58,25 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+// Separar testes unitários de integração
+task unitTest(type: Test) {
+    useJUnitPlatform {
+        excludeTags 'integration'
+    }
+    description 'Run unit tests only'
+}
+
+task integrationTest(type: Test) {
+    useJUnitPlatform {
+        includeTags 'integration'
+    }
+    shouldRunAfter unitTest
+    description 'Run integration tests only'
+}
+
+// TODO: Adicionar Jacoco quando suportar Java 25
+// jacoco {
+//     toolVersion = "0.8.12"
+// }
+
