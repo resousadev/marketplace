@@ -1,0 +1,100 @@
+package dio.marketplace.catalog;
+
+import com.mongodb.MongoClientSettings;
+import com.mongodb.ServerAddress;
+import com.zaxxer.hikari.HikariDataSource;
+import org.bson.UuidRepresentation;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.autoconfigure.DataSourceProperties;
+import org.springframework.boot.jpa.EntityManagerFactoryBuilder;
+import org.springframework.boot.jpa.autoconfigure.JpaProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
+
+import javax.sql.DataSource;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+
+import static org.springframework.data.redis.cache.RedisCacheConfiguration.defaultCacheConfig;
+
+@Configuration(proxyBeanMethods = false)
+@EnableJpaRepositories(
+        basePackages = "dio.marketplace.catalog",
+        entityManagerFactoryRef = "catalogEntityManagerFactory",
+        transactionManagerRef = "catalogTransactionManager")
+@EnableMongoRepositories
+@EnableMongoAuditing
+public class CatalogConfiguration {
+
+    @Bean(name = "catalogDataSourceProperties", defaultCandidate = false)
+    @ConfigurationProperties(prefix = "catalog.datasource")
+    public DataSourceProperties catalogDataSourceProperties() {
+        return new DataSourceProperties();
+    }
+
+    @Bean(name = "catalogDataSource", defaultCandidate = false)
+    @ConfigurationProperties("catalog.datasource.configuration")
+    public HikariDataSource catalogDataSource(@Qualifier("catalogDataSourceProperties") DataSourceProperties properties) {
+        return properties.initializeDataSourceBuilder()
+                .type(HikariDataSource.class)
+                .build();
+    }
+
+     @Bean(name = "catalogJpaProperties", defaultCandidate = false)
+     @ConfigurationProperties("catalog.jpa")
+     public JpaProperties catalogJpaProperties() {
+         return new JpaProperties();
+     }
+
+    @Bean(name = "catalogEntityManagerFactory", defaultCandidate = false)
+    public LocalContainerEntityManagerFactoryBean catalogEntityManagerFactory(
+            @Qualifier("catalogDataSource") DataSource dataSource,
+            @Qualifier("catalogJpaProperties") JpaProperties jpaProperties
+        ) {
+        var builder = new EntityManagerFactoryBuilder(
+                new HibernateJpaVendorAdapter(),
+                x -> new LinkedHashMap<>(jpaProperties.getProperties()),
+                null
+        );
+        return builder
+                .dataSource(dataSource)
+                .packages("dio.marketplace.catalog")
+                .persistenceUnit("catalog")
+                .build();
+    }
+
+    @Bean(name = "catalogTransactionManager", defaultCandidate = false)
+    public PlatformTransactionManager catalogTransactionManager(@Qualifier("catalogEntityManagerFactory") LocalContainerEntityManagerFactoryBean emf) {
+        return new JpaTransactionManager(emf.getObject());
+    }
+
+    // MongoDB configuration
+    @Bean
+    public MongoClientSettings mongoClientSettings() {
+        return MongoClientSettings.builder()
+            .applyToClusterSettings(builder ->
+                builder.hosts(Collections.singletonList(new ServerAddress("localhost", 27018)))                )
+            .uuidRepresentation(UuidRepresentation.STANDARD)
+            .build();
+    }
+
+    // Redis configuration
+    @Primary
+    @Bean
+    public RedisCacheManager catalogCacheManager(RedisConnectionFactory connectionFactory) {
+        return RedisCacheManager.builder(connectionFactory)
+            .cacheDefaults(defaultCacheConfig())
+            .build();
+    }
+}
