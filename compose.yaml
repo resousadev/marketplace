@@ -45,6 +45,22 @@ services:
       timeout: 5s
       retries: 3
 
+  ticketing-database:
+    image: postgres:18.3
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: ticketing
+    ports:
+      - "5433:5432"
+    volumes:
+      - ticketing_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "app", "-d", "ticketing"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+
   catalog-cache:
     image: redis:8.6
     ports:
@@ -74,6 +90,7 @@ volumes:
     registration_data:
     catalog_data:
     metadata_data:
+    ticketing_data:
     redis-insight-data:
 
 networks:

@@ -28,6 +28,18 @@ catalog:
       ddl-auto: update
     show-sql: true
 
+# TICKETING (PostgreSQL 5433)
+  ticketing:
+    datasource:
+      url: jdbc:postgresql://localhost:5433/ticketing
+      username: app
+      password: app
+      driver-class-name: org.postgresql.Driver
+    jpa:
+      hibernate:
+        ddl-auto: create
+      show-sql: true
+
 # CATALOG (CACHE)
   data:
     redis:
