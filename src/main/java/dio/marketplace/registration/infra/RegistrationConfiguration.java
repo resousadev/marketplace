@@ -33,7 +33,6 @@ public class RegistrationConfiguration {
 
     @Primary
     @Bean
-    @ConfigurationProperties("registration.datasource.configuration")
     public HikariDataSource registrationDataSource(DataSourceProperties properties) {
         return properties.initializeDataSourceBuilder()
                 .type(HikariDataSource.class)
