@@ -26,25 +26,33 @@ public class TicketingConfiguration {
 
   @Qualifier("ticketingDataSourceProperties")
   @Bean(defaultCandidate = false)
-  @ConfigurationProperties(prefix = "spring.ticketing.datasource")
+  @ConfigurationProperties(prefix = "ticketing.datasource")
   public DataSourceProperties ticketingDataSourceProperties() {
     // Configuração das propriedades do DataSource para o módulo de ticketing
     return new DataSourceProperties();
   }
 
-  @Qualifier("ticketingDataSource")
-  @Bean(defaultCandidate = false)
-  @ConfigurationProperties("spring.ticketing.datasource.hikari")
-  public HikariDataSource ticketingDataSource(@Qualifier("ticketingDataSourceProperties") DataSourceProperties properties) {
-    // Configuração do DataSource para o módulo de ticketing
-    return properties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
-  }
+   @Qualifier("ticketingDataSource")
+   @Bean(defaultCandidate = false)
+   public HikariDataSource ticketingDataSource(@Qualifier("ticketingDataSourceProperties") DataSourceProperties properties) {
+     // Configuração do DataSource para o módulo de ticketing
+     return properties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
+   }
 
-  @Qualifier("ticketingEntityManagerFactory")
-  public LocalContainerEntityManagerFactoryBean ticketingEntityManagerFactory(
-      @Qualifier("ticketingDataSource") HikariDataSource dataSource,
-      @Qualifier("ticketingJpaProperties") JpaProperties jpaProperties
-  ) {
+   @Qualifier("ticketingJpaProperties")
+   @Bean(defaultCandidate = false)
+   @ConfigurationProperties("ticketing.jpa")
+   public JpaProperties ticketingJpaProperties() {
+     // Configuração das propriedades JPA para o módulo de ticketing
+     return new JpaProperties();
+   }
+
+   @Bean(defaultCandidate = false)
+   @Qualifier("ticketingEntityManagerFactory")
+   public LocalContainerEntityManagerFactoryBean ticketingEntityManagerFactory(
+       @Qualifier("ticketingDataSource") HikariDataSource dataSource,
+       @Qualifier("ticketingJpaProperties") JpaProperties jpaProperties
+   ) {
     // Configuração do EntityManagerFactory para o módulo de ticketing
     var builder = new EntityManagerFactoryBuilder(
         new HibernateJpaVendorAdapter(),
@@ -59,9 +67,11 @@ public class TicketingConfiguration {
         .build();
   }
 
-  public PlatformTransactionManager ticketingTransactionManager(
-      @Qualifier("ticketingEntityManagerFactory") LocalContainerEntityManagerFactoryBean emf
-  ) {
+   @Bean(defaultCandidate = false)
+   @Qualifier("ticketingTransactionManager")
+   public PlatformTransactionManager ticketingTransactionManager(
+       @Qualifier("ticketingEntityManagerFactory") LocalContainerEntityManagerFactoryBean emf
+   ) {
     // Configuração do TransactionManager para o módulo de ticketing
     return new JpaTransactionManager(emf.getObject());
   }

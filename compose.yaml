@@ -54,7 +54,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - ticketing_data:/var/lib/postgresql/data
+      - ticketing_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-U", "app", "-d", "ticketing"]
       interval: 5s
